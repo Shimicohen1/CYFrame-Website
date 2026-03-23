@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CYFrame — Security Architecture Platform</title>
+<meta name="description" content="CYFrame is a Security Architecture Platform that helps organizations map controls, identify real exposure, prioritize remediation, and turn fragmented security findings into a clear action plan.">
+<meta name="keywords" content="cybersecurity, security architecture, exposure management, security roadmap, control mapping, cloud security, risk prioritization">
+<meta property="og:title" content="CYFrame — Security Architecture Platform">
+<meta property="og:description" content="Map controls. Identify real exposure. Prioritize remediation. Turn fragmented security findings into a clear architecture plan.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cyframe.co">
+<link rel="icon" type="image/png" href="assets/logo-nav.png">
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   CYFrame Brand Website — cyframe.co
+   ═══════════════════════════════════════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --bg: #0a0f1a;
+    --bg-panel: #111827;
+    --bg-secondary: #0f172a;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2332;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --text-dim: #64748b;
+    --accent: #8b5cf6;
+    --accent-bright: #a78bfa;
+    --accent-dim: #6d28d9;
+    --accent-glow: rgba(139, 92, 246, 0.15);
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --border: #1e293b;
+    --border-accent: rgba(139, 92, 246, 0.3);
+    --radius: 12px;
+    --radius-lg: 20px;
+    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html { scroll-behavior: smooth; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+a { color: var(--accent-bright); text-decoration: none; transition: color var(--transition); }
+a:hover { color: #c4b5fd; }
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+/* ── Navbar ─────────────────────────────────────────────────── */
+.navbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: rgba(10, 15, 26, 0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    transition: background var(--transition);
+}
+.navbar-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+}
+.nav-logo {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 1.4rem; font-weight: 800; color: var(--text);
+    letter-spacing: -0.02em;
+}
+.nav-logo img { height: 32px; width: auto; border-radius: 4px; filter: drop-shadow(0 0 6px rgba(139,92,246,0.25)); object-fit: contain; }
+.nav-logo span { background: linear-gradient(135deg, #8b5cf6, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+.nav-links a { color: var(--text-muted); font-size: 0.88rem; font-weight: 500; transition: color var(--transition); }
+.nav-links a:hover { color: var(--text); }
+.nav-cta {
+    background: var(--accent); color: #fff; padding: 8px 20px;
+    border-radius: 8px; font-size: 0.85rem; font-weight: 600;
+    border: none; cursor: pointer; transition: all var(--transition);
+}
+.nav-cta:hover { background: var(--accent-dim); transform: translateY(-1px); color: #fff; }
+
+/* Mobile menu */
+.nav-hamburger { display: none; background: none; border: none; color: var(--text); cursor: pointer; padding: 4px; }
+@media (max-width: 768px) {
+    .nav-hamburger { display: block; }
+    .nav-links { display: none; position: absolute; top: 64px; left: 0; right: 0; flex-direction: column; background: var(--bg-panel); border-bottom: 1px solid var(--border); padding: 20px; gap: 16px; }
+    .nav-links.open { display: flex; }
+}
+
+/* ── Hero ───────────────────────────────────────────────────── */
+.hero {
+    padding: 160px 0 100px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+.hero::before {
+    content: '';
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+    pointer-events: none;
+}
+.hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(139, 92, 246, 0.1); border: 1px solid var(--border-accent);
+    border-radius: 100px; padding: 6px 16px;
+    font-size: 0.78rem; font-weight: 600; color: var(--accent-bright);
+    margin-bottom: 24px;
+}
+.hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); animation: pulse-dot 2s infinite; }
+@keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+.hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4.2rem);
+    font-weight: 800; line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 20px;
+    position: relative;
+}
+.hero h1 .gradient { background: linear-gradient(135deg, var(--accent-bright), #c4b5fd, var(--success)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero-sub {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: var(--text-muted); max-width: 640px; margin: 0 auto 40px;
+    line-height: 1.7;
+}
+.hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.btn-primary {
+    background: var(--accent); color: #fff; padding: 14px 32px;
+    border-radius: 10px; font-size: 0.95rem; font-weight: 600;
+    border: none; cursor: pointer; transition: all var(--transition);
+    display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-primary:hover { background: var(--accent-dim); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(139,92,246,0.3); color: #fff; }
+.btn-secondary {
+    background: transparent; color: var(--text); padding: 14px 32px;
+    border-radius: 10px; font-size: 0.95rem; font-weight: 600;
+    border: 1px solid var(--border); cursor: pointer; transition: all var(--transition);
+    display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent-bright); transform: translateY(-2px); }
+
+/* ── Stats strip ────────────────────────────────────────────── */
+.stats-strip {
+    display: flex; justify-content: center; gap: 60px; flex-wrap: wrap;
+    padding: 60px 0 0;
+}
+.stat-item { text-align: center; }
+.stat-val { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 800; color: var(--accent-bright); letter-spacing: -0.02em; }
+.stat-label { font-size: 0.82rem; color: var(--text-muted); margin-top: 4px; font-weight: 500; }
+
+/* ── Trusted by / social proof ──────────────────────────────── */
+.trusted {
+    padding: 60px 0 16px;
+    text-align: center;
+}
+.trusted-label { font-size: 0.75rem; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 24px; }
+.trusted-logos { display: flex; justify-content: center; align-items: center; gap: 24px; flex-wrap: wrap; }
+.trusted-logos span { font-size: 0.82rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0.04em; background: var(--bg-card); border: 1px solid var(--border); border-radius: 100px; padding: 8px 20px; transition: all var(--transition); }
+.trusted-logos span:hover { border-color: var(--border-accent); }
+
+/* ── Section styling ────────────────────────────────────────── */
+.section { padding: 100px 0; }
+.section-label { font-size: 0.75rem; font-weight: 700; color: var(--accent-bright); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 12px; }
+.section-title { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 16px; }
+.section-desc { font-size: 1.05rem; color: var(--text-muted); max-width: 600px; line-height: 1.7; }
+.section-header { text-align: center; margin-bottom: 64px; }
+.section-header .section-desc { margin: 0 auto; }
+
+/* ── Hero → Platform Preview flow ──────────────────────────── */
+.hero { padding-bottom: 80px; }
+.product-preview-section { padding-top: 80px; padding-bottom: 100px; }
+
+/* ── Features grid ──────────────────────────────────────────── */
+.features-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;
+}
+.feature-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 32px;
+    transition: all var(--transition);
+    position: relative; overflow: hidden;
+}
+.feature-card:hover { border-color: var(--border-accent); transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+.feature-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+    opacity: 0; transition: opacity var(--transition);
+}
+.feature-card:hover::before { opacity: 1; }
+.feature-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: var(--accent-glow); color: var(--accent-bright);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 20px; font-size: 1.4rem;
+}
+.feature-card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 10px; }
+.feature-card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.65; }
+
+/* ── Big feature showcase ───────────────────────────────────── */
+.showcase {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
+    padding: 80px 0;
+}
+.showcase.reverse { direction: rtl; }
+.showcase.reverse > * { direction: ltr; }
+.showcase-visual {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 24px;
+    position: relative; overflow: hidden;
+}
+.showcase-visual::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(139,92,246,0.05), transparent);
+    pointer-events: none;
+}
+.showcase-mockup {
+    width: 100%; border-radius: 8px;
+    background: var(--bg-secondary); padding: 16px;
+    font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.72rem;
+    color: var(--text-muted); line-height: 1.8;
+}
+.showcase-mockup .line-accent { color: var(--accent-bright); }
+.showcase-mockup .line-success { color: var(--success); }
+.showcase-mockup .line-warn { color: var(--warning); }
+.showcase-mockup .line-danger { color: var(--danger); }
+.showcase-content .section-label { text-align: left; }
+.showcase-content .section-title { text-align: left; }
+.showcase-content .section-desc { text-align: left; }
+.showcase-list { list-style: none; margin-top: 24px; }
+.showcase-list li { display: flex; align-items: flex-start; gap: 12px; padding: 8px 0; color: var(--text-muted); font-size: 0.9rem; }
+.showcase-list li::before { content: '✓'; color: var(--success); font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+
+@media (max-width: 768px) {
+    .showcase { grid-template-columns: 1fr; gap: 32px; }
+    .showcase.reverse { direction: ltr; }
+}
+
+/* ── Domains grid ───────────────────────────────────────────── */
+.domains-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; }
+.domain-pill {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px 16px;
+    text-align: center; transition: all var(--transition);
+}
+.domain-pill:hover { border-color: var(--border-accent); transform: translateY(-2px); }
+.domain-pill-icon { font-size: 1.5rem; margin-bottom: 8px; }
+.domain-pill-name { font-size: 0.78rem; font-weight: 600; color: var(--text); }
+
+/* ── How it works ───────────────────────────────────────────── */
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 32px; }
+.step {
+    text-align: center; padding: 32px 24px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    position: relative;
+    transition: all var(--transition);
+}
+.step:hover { border-color: var(--border-accent); transform: translateY(-4px); }
+.step-number {
+    font-size: 3rem; font-weight: 900;
+    background: linear-gradient(135deg, var(--accent), var(--accent-bright));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 16px; line-height: 1;
+}
+.step h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; }
+.step p { color: var(--text-muted); font-size: 0.88rem; line-height: 1.6; }
+
+/* ── Pricing ────────────────────────────────────────────────── */
+.pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; max-width: 960px; margin: 0 auto; }
+.pricing-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 36px;
+    display: flex; flex-direction: column;
+    transition: all var(--transition);
+    position: relative;
+}
+.pricing-card.featured {
+    border-color: var(--accent);
+    box-shadow: 0 0 40px rgba(139, 92, 246, 0.15);
+}
+.pricing-card.featured::before {
+    content: 'RECOMMENDED'; position: absolute;
+    top: -12px; left: 50%; transform: translateX(-50%);
+    background: var(--accent); color: #fff;
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em;
+    padding: 4px 16px; border-radius: 100px;
+}
+.pricing-card:hover { transform: translateY(-4px); }
+.pricing-name { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; }
+.pricing-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5; }
+.pricing-price { font-size: 1.5rem; font-weight: 800; margin-bottom: 24px; }
+.pricing-price span { font-size: 0.85rem; font-weight: 400; color: var(--text-muted); }
+.pricing-features { list-style: none; flex: 1; margin-bottom: 24px; }
+.pricing-features li { padding: 8px 0; font-size: 0.88rem; color: var(--text-muted); display: flex; align-items: center; gap: 10px; }
+.pricing-features li::before { content: '✓'; color: var(--success); font-weight: 700; }
+.pricing-btn {
+    width: 100%; padding: 12px; border-radius: 10px;
+    font-size: 0.9rem; font-weight: 600; cursor: pointer;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--text); transition: all var(--transition);
+}
+.pricing-btn:hover { border-color: var(--accent); color: var(--accent-bright); }
+.pricing-card.featured .pricing-btn {
+    background: var(--accent); border-color: var(--accent); color: #fff;
+}
+.pricing-card.featured .pricing-btn:hover { background: var(--accent-dim); }
+
+/* ── Testimonial / quote ────────────────────────────────────── */
+.quote-section { background: var(--bg-secondary); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.quote-card {
+    max-width: 700px; margin: 0 auto; text-align: center;
+}
+.quote-text { font-size: 1.4rem; font-weight: 500; line-height: 1.6; font-style: italic; color: var(--text); margin-bottom: 24px; }
+.quote-author { color: var(--text-muted); font-size: 0.9rem; }
+.quote-author strong { color: var(--text); font-weight: 600; }
+
+/* ── CTA section ────────────────────────────────────────────── */
+.cta-section {
+    text-align: center;
+    background: linear-gradient(180deg, var(--bg) 0%, var(--bg-secondary) 100%);
+    position: relative;
+}
+.cta-section::before {
+    content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%);
+    pointer-events: none;
+}
+.cta-section .section-title { position: relative; }
+.cta-section .section-desc { margin: 0 auto 40px; position: relative; }
+.cta-section .hero-buttons { position: relative; }
+
+/* ── Contact form ───────────────────────────────────────────── */
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+@media (max-width: 768px) { .contact-grid { grid-template-columns: 1fr; gap: 32px; } }
+.contact-form { display: flex; flex-direction: column; gap: 16px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 768px) { .form-row { grid-template-columns: 1fr; } }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group label { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); }
+.form-group input, .form-group textarea, .form-group select {
+    background: var(--bg-secondary); border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px 14px;
+    color: var(--text); font-size: 0.9rem;
+    font-family: inherit; transition: border-color var(--transition);
+    outline: none;
+}
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--accent); }
+.form-group textarea { resize: vertical; min-height: 100px; }
+.form-submit {
+    background: var(--accent); color: #fff; padding: 14px 32px;
+    border-radius: 10px; font-size: 0.95rem; font-weight: 600;
+    border: none; cursor: pointer; transition: all var(--transition);
+    align-self: flex-start;
+}
+.form-submit:hover { background: var(--accent-dim); transform: translateY(-2px); }
+.contact-info { }
+.contact-info h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 16px; }
+.contact-info p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 32px; }
+.contact-perks { list-style: none; }
+.contact-perks li { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; font-size: 0.9rem; color: var(--text-muted); }
+.contact-perks li .perk-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--accent-glow); color: var(--accent-bright); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1rem; }
+
+/* ── Footer ─────────────────────────────────────────────────── */
+.footer {
+    border-top: 1px solid var(--border);
+    padding: 60px 0 40px;
+    background: var(--bg-secondary);
+}
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+@media (max-width: 768px) { .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; } }
+.footer-brand { }
+.footer-brand-name { font-size: 1.2rem; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.footer-brand-name img { height: 22px; width: auto; border-radius: 4px; filter: drop-shadow(0 0 6px rgba(139,92,246,0.25)); object-fit: contain; }
+.footer-brand p { color: var(--text-muted); font-size: 0.85rem; line-height: 1.6; }
+.footer-col h4 { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); margin-bottom: 16px; }
+.footer-col ul { list-style: none; }
+.footer-col li { margin-bottom: 10px; }
+.footer-col a { color: var(--text-muted); font-size: 0.88rem; }
+.footer-col a:hover { color: var(--text); }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 24px; border-top: 1px solid var(--border); }
+.footer-bottom p { font-size: 0.8rem; color: var(--text-dim); }
+/* ── Product Preview Section ────────────────────────────────── */
+.product-preview-section { background: var(--bg-secondary); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+.product-preview-grid { display: flex; flex-direction: column; gap: 32px; }
+
+.product-preview-main {
+    background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px; padding: 20px; transition: all var(--transition);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+}
+.product-preview-main:hover { border-color: var(--border-accent); transform: translateY(-4px); box-shadow: 0 24px 64px rgba(0,0,0,0.5); }
+.product-preview-image {
+    width: 100%; height: auto; border-radius: 12px; display: block;
+    border: 1px solid rgba(255,255,255,0.06);
+}
+.product-preview-main .product-preview-image {
+    /* clean cropped images, show naturally */
+}
+.product-preview-copy { padding: 20px 8px 4px; }
+.preview-eyebrow {
+    font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--accent-bright); margin-bottom: 8px;
+}
+.product-preview-copy h3 {
+    font-size: 1.15rem; font-weight: 700; color: var(--text); margin-bottom: 6px;
+}
+.product-preview-copy p {
+    font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;
+}
+
+.product-preview-cards {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+}
+.product-preview-card {
+    background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px; padding: 16px; transition: all var(--transition);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3); cursor: pointer;
+}
+.product-preview-card:hover { border-color: var(--border-accent); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.4); }
+.product-preview-card.active { border-color: var(--accent); box-shadow: 0 0 20px rgba(139,92,246,0.2); }
+.product-preview-card .product-preview-image {
+    height: 180px; object-fit: cover; object-position: top left;
+}
+.product-preview-card .product-preview-copy { padding: 14px 4px 4px; }
+.product-preview-card .product-preview-copy h3 { font-size: 1rem; }
+.product-preview-card .product-preview-copy p { font-size: 0.82rem; }
+
+.product-proof {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 6px;
+    opacity: 0.8;
+}
+
+@media (max-width: 1024px) {
+    .product-preview-cards { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+    .product-preview-cards { grid-template-columns: 1fr; }
+    .product-preview-card .product-preview-image { height: 160px; }
+}
+/* ── Animations ─────────────────────────────────────────────── */
+.fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+/* ── Scrollbar ──────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+</style>
+</head>
+<body>
+
+<!-- ═══ Navbar ═══ -->
+<nav class="navbar" id="navbar">
+    <div class="navbar-inner">
+        <a href="#" class="nav-logo">
+            <img src="assets/logo-nav.png" alt="CYFrame">
+            <span>CYFrame</span>
+        </a>
+        <button class="nav-hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <ul class="nav-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#pricing">Platform</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="#contact" class="nav-cta">Request Demo</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- ═══ Hero ═══ -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-badge">
+            <span class="hero-badge-dot"></span>
+            Security Architecture Platform — AI-Powered
+        </div>
+        <h1>
+            Know Exactly What To Fix Next —<br>
+            <span class="gradient">Across Your Entire Security Stack</span>
+        </h1>
+        <p class="hero-sub">
+            Map your security posture. Understand real exposure. Identify architecture gaps. Build a prioritized roadmap your team can execute — without adding more tools or noise.
+        </p>
+        <div class="hero-buttons">
+            <a href="#contact" class="btn-primary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
+                Request Demo
+            </a>
+            <a href="#platform-preview" class="btn-secondary">
+                See the Platform
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </a>
+        </div>
+        <div class="stats-strip">
+            <div class="stat-item fade-in">
+                <div class="stat-val">Unified</div>
+                <div class="stat-label">Security View</div>
+            </div>
+            <div class="stat-item fade-in">
+                <div class="stat-val">AI-Powered</div>
+                <div class="stat-label">Prioritization</div>
+            </div>
+            <div class="stat-item fade-in">
+                <div class="stat-val">Architecture</div>
+                <div class="stat-label">Roadmap</div>
+            </div>
+            <div class="stat-item fade-in">
+                <div class="stat-val">Executive-Ready</div>
+                <div class="stat-label">Output</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ Trusted By ═══ -->
+<section class="trusted">
+    <div class="container">
+        <div class="trusted-label">Built for security leaders, architects, consultants, and enterprise teams</div>
+        <div class="trusted-logos">
+            <span>Identity</span>
+            <span>Endpoint</span>
+            <span>Cloud</span>
+            <span>Data</span>
+            <span>Collaboration</span>
+            <span>AI</span>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ Platform Preview ═══ -->
+<section class="section product-preview-section" id="platform-preview">
+    <div class="container">
+        <div class="section-header fade-in">
+            <div class="section-label">Platform Preview</div>
+            <h2 class="section-title">See CYFrame in action</h2>
+            <p class="section-desc">Understand your security posture, exposure, architecture, and priorities — in one place.</p>
+        </div>
+        <div class="product-preview-grid">
+            <!-- Main featured screenshot -->
+            <div class="product-preview-main fade-in" data-src="images/dashboard-clean.png" data-eyebrow="Posture" data-title="Security posture at a glance" data-desc="Get a clear view of framework health, control status, and domain-level security posture.">
+                <img src="images/dashboard-clean.png" alt="CYFrame Security Posture Dashboard" class="product-preview-image">
+                <div class="product-preview-copy">
+                    <div class="preview-eyebrow">Posture</div>
+                    <h3>Security posture at a glance</h3>
+                    <p>Get a clear view of framework health, control status, and domain-level security posture.</p>
+                    <p class="product-proof">Based on real enterprise security environments</p>
+                </div>
+            </div>
+            <!-- Supporting screenshots -->
+            <div class="product-preview-cards">
+                <div class="product-preview-card fade-in" data-src="images/attack-path-clean.png" data-eyebrow="Exposure" data-title="See how attacks can unfold" data-desc="Understand how attackers can move from entry point to impact across your environment.">
+                    <img src="images/attack-path-clean.png" alt="Threats &amp; Attack Paths" class="product-preview-image">
+                    <div class="product-preview-copy">
+                        <div class="preview-eyebrow">Exposure</div>
+                        <h3>See how attacks can unfold</h3>
+                        <p>Understand how attackers can move from entry point to impact across your environment.</p>
+                        <p class="product-proof">Based on real enterprise security environments</p>
+                    </div>
+                </div>
+                <div class="product-preview-card fade-in" data-src="images/framework-clean.png" data-eyebrow="Architecture" data-title="Map security components clearly" data-desc="Break down your security architecture into clear layers, controls, and coverage gaps.">
+                    <img src="images/framework-clean.png" alt="Security Architecture Components" class="product-preview-image">
+                    <div class="product-preview-copy">
+                        <div class="preview-eyebrow">Architecture</div>
+                        <h3>Map security components clearly</h3>
+                        <p>Break down your security architecture into clear layers, controls, and coverage gaps.</p>
+                        <p class="product-proof">Based on real enterprise security environments</p>
+                    </div>
+                </div>
+                <div class="product-preview-card fade-in" data-src="images/roadmap-clean.png" data-eyebrow="Roadmap" data-title="Prioritize what to fix next" data-desc="Turn security findings into a practical remediation roadmap your team can execute.">
+                    <img src="images/roadmap-clean.png" alt="Security Remediation Roadmap" class="product-preview-image">
+                    <div class="product-preview-copy">
+                        <div class="preview-eyebrow">Roadmap</div>
+                        <h3>Prioritize what to fix next</h3>
+                        <p>Turn security findings into a practical remediation roadmap your team can execute.</p>
+                        <p class="product-proof">Based on real enterprise security environments</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ Features ═══ -->
+<section class="section" id="features">
+    <div class="container">
+        <div class="section-header fade-in">
+            <div class="section-label">Features</div>
+            <div class="section-title">Security architecture clarity,<br>not more noise</div>
+            <p class="section-desc">CYFrame helps teams move from fragmented controls and disconnected findings to clear priorities, architecture visibility, and practical remediation planning.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <h3>Security Architecture Mapping</h3>
+                <p>Automatically organize controls, policies, and configurations into a structured architecture view — across identity, endpoint, cloud, and more.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                </div>
+                <h3>Control Gap Detection</h3>
+                <p>Surface controls that are missing, misconfigured, or not enforced — with context on where each gap sits in your security architecture.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                </div>
+                <h3>Risk Prioritization Engine</h3>
+                <p>Cut through alert noise. CYFrame uses AI-powered analysis to rank findings by real-world exposure and business impact so your team knows exactly where to focus.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                </div>
+                <h3>Attack Path Visibility</h3>
+                <p>AI-driven analysis traces how identity, endpoint, cloud, and AI weaknesses chain together into real attack scenarios — mapped automatically.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                </div>
+                <h3>Executive &amp; Technical Reporting</h3>
+                <p>Deliver outputs that work for both leadership decision-making and hands-on security execution.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1.27A7 7 0 0 1 14 23h-4a7 7 0 0 1-6.73-4H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/></svg>
+                </div>
+                <h3>Roadmap Generation</h3>
+                <p>Automatically generate a remediation roadmap with priorities, domain grouping, and clear execution steps.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                </div>
+                <h3>Agentless Collection</h3>
+                <p>Collect security posture and configuration signals through secure, low-friction access without deploying endpoint agents.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ 11 Security Domains ═══ -->
+<section class="section" style="background: var(--bg-secondary); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+    <div class="container">
+        <div class="section-header fade-in">
+            <div class="section-label">Coverage</div>
+            <div class="section-title">Unified visibility across modern<br>security domains</div>
+            <p class="section-desc">CYFrame provides a unified view across identity, endpoint, cloud, data, collaboration, AI, and broader security architecture layers.</p>
+        </div>
+        <div class="domains-grid">
+            <div class="domain-pill fade-in"><div class="domain-pill-icon">🔐</div><div class="domain-pill-name">Identity</div></div>
+            <div class="domain-pill fade-in"><div class="domain-pill-icon">💻</div><div class="domain-pill-name">Endpoint</div></div>
+            <div class="domain-pill fade-in"><div class="domain-pill-icon">☁️</div><div class="domain-pill-name">Cloud</div></div>
+            <div class="domain-pill fade-in"><div class="domain-pill-icon">📊</div><div class="domain-pill-name">Data</div></div>
+            <div class="domain-pill fade-in"><div class="domain-pill-icon">📧</div><div class="domain-pill-name">Collaboration</div></div>
+            <div class="domain-pill fade-in"><div class="domain-pill-icon">🤖</div><div class="domain-pill-name">AI</div></div>
+            <div class="domain-pill fade-in"><div class="domain-pill-icon">🎯</div><div class="domain-pill-name">Exposure</div></div>
+            <div class="domain-pill fade-in"><div class="domain-pill-icon">🛠️</div><div class="domain-pill-name">Remediation</div></div>
+            <div class="domain-pill fade-in"><div class="domain-pill-icon">🔍</div><div class="domain-pill-name">Operations</div></div>
+            <div class="domain-pill fade-in"><div class="domain-pill-icon">📱</div><div class="domain-pill-name">Applications</div></div>
+            <div class="domain-pill fade-in"><div class="domain-pill-icon">🏗️</div><div class="domain-pill-name">Infrastructure</div></div>
+            <div class="domain-pill fade-in"><div class="domain-pill-icon">📋</div><div class="domain-pill-name">Governance</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ Showcase: Platform Workflow ═══ -->
+<section class="section">
+    <div class="container">
+        <div class="showcase fade-in">
+            <div class="showcase-content">
+                <div class="section-label">Platform Workflow</div>
+                <div class="section-title">From environment signals<br>to actionable priorities</div>
+                <p class="section-desc">CYFrame connects to your environment, collects signals across security domains, and turns raw configuration data into structured, actionable priorities.</p>
+                <ul class="showcase-list">
+                    <li>Agentless collection with secure, read-only access</li>
+                    <li>No agents, no environment changes</li>
+                    <li>Structured control and exposure mapping</li>
+                    <li>Prioritized outputs for both leadership and technical teams</li>
+                </ul>
+            </div>
+            <div class="showcase-visual">
+                <div class="showcase-mockup">
+                    <div><span class="line-accent">$</span> cyframe collect</div>
+                    <div><span class="line-success">✓</span> Connected to environment</div>
+                    <div><span class="line-success">✓</span> Identity signals collected</div>
+                    <div><span class="line-success">✓</span> Endpoint policies mapped</div>
+                    <div><span class="line-success">✓</span> Cloud configuration reviewed</div>
+                    <div><span class="line-success">✓</span> Data &amp; collaboration assessed</div>
+                    <div><span class="line-accent">─────────────────────────────</span></div>
+                    <div>&nbsp;</div>
+                    <div><span class="line-accent">$</span> cyframe build</div>
+                    <div><span class="line-success">✓</span> Control gaps identified</div>
+                    <div><span class="line-success">✓</span> Exposure paths correlated</div>
+                    <div><span class="line-success">✓</span> Priority findings generated</div>
+                    <div><span class="line-success">✓</span> Architecture roadmap ready</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ Showcase: Decision-Ready Output ═══ -->
+<section class="section" style="background: var(--bg-secondary); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+    <div class="container">
+        <div class="showcase reverse fade-in">
+            <div class="showcase-content">
+                <div class="section-label">Decision-Ready Output</div>
+                <div class="section-title">Outputs your team<br>can actually act on</div>
+                <p class="section-desc">From executive summaries to technical breakdowns — CYFrame delivers views that drive both leadership decisions and hands-on execution.</p>
+                <ul class="showcase-list">
+                    <li>Executive-ready posture and priority summary</li>
+                    <li>Technical drill-down by domain, component, and control</li>
+                    <li>Shareable outputs for reviews and stakeholder alignment</li>
+                    <li>Structured for recurring assessments over time</li>
+                </ul>
+            </div>
+            <div class="showcase-visual">
+                <div class="showcase-mockup" style="text-align: center; padding: 32px;">
+                    <div style="font-size: 3rem; margin-bottom: 8px;">📊</div>
+                    <div style="font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 4px;">Security Posture</div>
+                    <div style="font-size: 2.5rem; font-weight: 800; color: var(--accent-bright); margin-bottom: 16px;">45%</div>
+                    <div style="display: flex; gap: 4px; height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 16px;">
+                        <div style="width: 15%; background: var(--success);"></div>
+                        <div style="width: 18%; background: var(--danger);"></div>
+                        <div style="width: 14%; background: var(--warning);"></div>
+                        <div style="width: 53%; background: var(--accent);"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-around; font-size: 0.75rem;">
+                        <div><span style="color: var(--success);">●</span> Covered</div>
+                        <div><span style="color: var(--danger);">●</span> Gaps</div>
+                        <div><span style="color: var(--warning);">●</span> Exposure</div>
+                        <div><span style="color: var(--accent-bright);">●</span> Review</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ Why CYFrame ═══ -->
+<section class="section">
+    <div class="container">
+        <div class="section-header fade-in">
+            <div class="section-label">Why CYFrame</div>
+            <div class="section-title">Most security tools give you data.<br>CYFrame gives you direction.</div>
+            <p class="section-desc">Instead of more dashboards and alerts, CYFrame connects your security findings to clear priorities and a practical architecture plan.</p>
+        </div>
+        <div class="features-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                </div>
+                <h3>Connect Findings to Decisions</h3>
+                <p>Turn security gaps into clear architecture and remediation priorities.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                </div>
+                <h3>Focus on What Matters</h3>
+                <p>Reduce noise and help teams understand what deserves action first.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <h3>Align Leadership and Security Teams</h3>
+                <p>Present findings in a way that supports both executive decisions and technical execution.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                </div>
+                <h3>Build a Real Security Roadmap</h3>
+                <p>Move from scattered controls and assessments to a structured action plan.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ How It Works ═══ -->
+<section class="section" id="how-it-works">
+    <div class="container">
+        <div class="section-header fade-in">
+            <div class="section-label">How It Works</div>
+            <div class="section-title">3 Steps to Security<br>Architecture Clarity</div>
+            <p class="section-desc">CYFrame helps teams move from raw configuration data to clear priorities and execution.</p>
+        </div>
+        <div class="steps">
+            <div class="step fade-in">
+                <div class="step-number">01</div>
+                <h3>Connect your environment</h3>
+                <p>Securely collect configuration signals across security domains with read-only, low-friction access.</p>
+            </div>
+            <div class="step fade-in">
+                <div class="step-number">02</div>
+                <h3>Map gaps and priorities</h3>
+                <p>AI-powered analysis maps findings into exposure, architecture, and priority views — so teams see what matters most.</p>
+            </div>
+            <div class="step fade-in">
+                <div class="step-number">03</div>
+                <h3>Generate a security roadmap</h3>
+                <p>Get a prioritized remediation roadmap and architecture plan your team can act on immediately.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ Quote ═══ -->
+<section class="section quote-section">
+    <div class="container">
+        <div class="quote-card fade-in">
+            <div class="quote-text">“Security teams don’t need more raw findings. They need clarity on exposure, priorities, and what to do next.”</div>
+            <div class="quote-author"><strong>CYFrame</strong> — Built for security leaders, architects, and teams that need direction, not noise</div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ Pricing ═══ -->
+<section class="section" id="pricing">
+    <div class="container">
+        <div class="section-header fade-in">
+            <div class="section-label">Start Here</div>
+            <div class="section-title">How teams start using CYFrame</div>
+            <p class="section-desc">See how CYFrame maps your current security posture, highlights meaningful gaps, and turns findings into a prioritized roadmap.</p>
+        </div>
+        <div class="pricing-grid">
+            <div class="pricing-card fade-in">
+                <div class="pricing-name">Platform Preview</div>
+                <div class="pricing-desc">A focused walkthrough of CYFrame’s posture, exposure, and roadmap capabilities.</div>
+                <div class="pricing-price">Live Session</div>
+                <ul class="pricing-features">
+                    <li>Product walkthrough</li>
+                    <li>Sample outputs</li>
+                    <li>Core use cases</li>
+                    <li>Q&amp;A with your team</li>
+                </ul>
+                <a href="#contact" class="pricing-btn">Request Demo</a>
+            </div>
+            <div class="pricing-card featured fade-in">
+                <div class="pricing-name">Guided Assessment</div>
+                <div class="pricing-desc">A deeper session focused on your current environment, risk areas, and practical next steps.</div>
+                <div class="pricing-price">By Engagement</div>
+                <ul class="pricing-features">
+                    <li>Current-state review</li>
+                    <li>Priority gap discussion</li>
+                    <li>Architecture-focused findings</li>
+                    <li>Remediation direction</li>
+                </ul>
+                <a href="#contact" class="pricing-btn">Talk to Us</a>
+            </div>
+            <div class="pricing-card fade-in">
+                <div class="pricing-name">Enterprise Rollout</div>
+                <div class="pricing-desc">For larger teams, partners, and organizations looking to operationalize CYFrame over time.</div>
+                <div class="pricing-price">Custom</div>
+                <ul class="pricing-features">
+                    <li>Multi-team enablement</li>
+                    <li>Ongoing assessments</li>
+                    <li>Partner / enterprise workflows</li>
+                    <li>Tailored rollout model</li>
+                </ul>
+                <a href="#contact" class="pricing-btn">Contact Sales</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ CTA ═══ -->
+<section class="section cta-section">
+    <div class="container">
+        <div class="section-title fade-in">Ready to see CYFrame in your environment?</div>
+        <p class="section-desc fade-in">See how CYFrame maps your security posture, highlights real exposure, and turns findings into a prioritized roadmap.</p>
+        <div class="hero-buttons fade-in">
+            <a href="#contact" class="btn-primary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
+                Request Demo
+            </a>
+            <a href="mailto:hello@cyframe.co" class="btn-secondary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                Contact Us
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ Contact ═══ -->
+<section class="section" id="contact" style="background: var(--bg-secondary); border-top: 1px solid var(--border);">
+    <div class="container">
+        <div class="contact-grid">
+            <div>
+                <div class="section-label">Contact</div>
+                <div class="section-title" style="margin-bottom: 16px;">Request a CYFrame Demo</div>
+                <p class="section-desc" style="margin-bottom: 32px;">Tell us a bit about your environment and goals, and we’ll schedule a tailored walkthrough of the platform.</p>
+                <form class="contact-form" onsubmit="handleSubmit(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="first-name">First Name *</label>
+                            <input type="text" id="first-name" name="firstName" required placeholder="John">
+                        </div>
+                        <div class="form-group">
+                            <label for="last-name">Last Name *</label>
+                            <input type="text" id="last-name" name="lastName" required placeholder="Doe">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Work Email *</label>
+                        <input type="email" id="email" name="email" required placeholder="john@company.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="company">Company *</label>
+                        <input type="text" id="company" name="company" required placeholder="Your Company">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="role">Your Role</label>
+                            <select id="role" name="role">
+                                <option value="">Select...</option>
+                                <option>CISO / Security Director</option>
+                                <option>Security Architect</option>
+                                <option>IT Manager / Director</option>
+                                <option>MSP / Consultant</option>
+                                <option>System Administrator</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="company-size">Company Size</label>
+                            <select id="company-size" name="companySize">
+                                <option value="">Select...</option>
+                                <option>1-50 employees</option>
+                                <option>51-200 employees</option>
+                                <option>201-1000 employees</option>
+                                <option>1000+ employees</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">How can we help?</label>
+                        <textarea id="message" name="message" placeholder="Tell us about your environment and what you're looking to improve..."></textarea>
+                    </div>
+                    <button type="submit" class="form-submit">Send Request</button>
+                </form>
+            </div>
+            <div class="contact-info">
+                <h3>Why CYFrame?</h3>
+                <p>CYFrame turns security complexity into structured priorities, architecture visibility, and a practical next-step plan.</p>
+                <ul class="contact-perks">
+                    <li>
+                        <div class="perk-icon">⚡</div>
+                        <div><strong style="color: var(--text);">Low-Friction Setup</strong><br>Connect quickly with secure, read-only access — no complex deployment required.</div>
+                    </li>
+                    <li>
+                        <div class="perk-icon">🔒</div>
+                        <div><strong style="color: var(--text);">Read-Only Access</strong><br>CYFrame never modifies your environment. All data stays local.</div>
+                    </li>
+                    <li>
+                        <div class="perk-icon">📊</div>
+                        <div><strong style="color: var(--text);">Decision-Ready Outputs</strong><br>Outputs that work for both leadership conversations and hands-on execution.</div>
+                    </li>
+                    <li>
+                        <div class="perk-icon">🎯</div>
+                        <div><strong style="color: var(--text);">Prioritized Findings</strong><br>Know exactly where to focus — ranked by exposure, impact, and relevance.</div>
+                    </li>
+                    <li>
+                        <div class="perk-icon">🛡️</div>
+                        <div><strong style="color: var(--text);">Architecture-First Approach</strong><br>Go beyond checklists — map controls, understand gaps, and build a real roadmap.</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ Footer ═══ -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="footer-brand-name">
+                    <img src="assets/logo-nav.png" alt="CYFrame">
+                    CYFrame
+                </div>
+                <p>Security Architecture Platform.<br>Map posture. Understand exposure. Build a prioritized remediation roadmap.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#pricing">Platform</a></li>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#features">Architecture Mapping</a></li>
+                    <li><a href="#features">Gap Detection</a></li>
+                    <li><a href="#features">Roadmap Generation</a></li>
+                    <li><a href="#contact">Support</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="mailto:hello@cyframe.co">hello@cyframe.co</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 CYFrame. All rights reserved.</p>
+            <p>cyframe.co</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+// ── Scroll animations ─────────────────────────────────────────
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+        }
+    });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// ── Product Preview click-to-swap ─────────────────────────────
+(function() {
+    const main = document.querySelector('.product-preview-main');
+    const cards = document.querySelectorAll('.product-preview-card');
+    if (!main || !cards.length) return;
+
+    cards.forEach(card => {
+        card.addEventListener('click', () => {
+            // Get current main data
+            const mainData = {
+                src: main.dataset.src,
+                eyebrow: main.dataset.eyebrow,
+                title: main.dataset.title,
+                desc: main.dataset.desc
+            };
+            // Get clicked card data
+            const cardData = {
+                src: card.dataset.src,
+                eyebrow: card.dataset.eyebrow,
+                title: card.dataset.title,
+                desc: card.dataset.desc
+            };
+
+            // Swap into main
+            main.dataset.src = cardData.src;
+            main.dataset.eyebrow = cardData.eyebrow;
+            main.dataset.title = cardData.title;
+            main.dataset.desc = cardData.desc;
+            main.querySelector('.product-preview-image').src = cardData.src;
+            main.querySelector('.preview-eyebrow').textContent = cardData.eyebrow;
+            main.querySelector('h3').textContent = cardData.title;
+            main.querySelector('p').textContent = cardData.desc;
+
+            // Swap into clicked card
+            card.dataset.src = mainData.src;
+            card.dataset.eyebrow = mainData.eyebrow;
+            card.dataset.title = mainData.title;
+            card.dataset.desc = mainData.desc;
+            card.querySelector('.product-preview-image').src = mainData.src;
+            card.querySelector('.preview-eyebrow').textContent = mainData.eyebrow;
+            card.querySelector('h3').textContent = mainData.title;
+            card.querySelector('p').textContent = mainData.desc;
+
+            // Active state
+            cards.forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+        });
+    });
+})();
+
+// ── Navbar scroll effect ──────────────────────────────────────
+window.addEventListener('scroll', () => {
+    const navbar = document.getElementById('navbar');
+    if (window.scrollY > 50) {
+        navbar.style.background = 'rgba(10, 15, 26, 0.95)';
+    } else {
+        navbar.style.background = 'rgba(10, 15, 26, 0.85)';
+    }
+});
+
+// ── Smooth scroll for nav links ───────────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Close mobile menu
+            document.querySelector('.nav-links').classList.remove('open');
+        }
+    });
+});
+
+// ── Form handler ──────────────────────────────────────────────
+function handleSubmit(e) {
+    e.preventDefault();
+    const form = e.target;
+    const data = new FormData(form);
+    const obj = Object.fromEntries(data.entries());
+
+    // For now, open mailto with form data
+    const subject = encodeURIComponent('CYFrame Demo Request — ' + obj.company);
+    const body = encodeURIComponent(
+        'Name: ' + obj.firstName + ' ' + obj.lastName + '\n' +
+        'Email: ' + obj.email + '\n' +
+        'Company: ' + obj.company + '\n' +
+        'Role: ' + (obj.role || 'Not specified') + '\n' +
+        'Company Size: ' + (obj.companySize || 'Not specified') + '\n' +
+        'Message: ' + (obj.message || 'N/A')
+    );
+    window.location.href = 'mailto:hello@cyframe.co?subject=' + subject + '&body=' + body;
+
+    // Show confirmation
+    const btn = form.querySelector('.form-submit');
+    btn.textContent = '✓ Request Sent!';
+    btn.style.background = '#10b981';
+    setTimeout(() => {
+        btn.textContent = 'Send Request';
+        btn.style.background = '';
+    }, 3000);
+}
+</script>
+
+</body>
+</html>
